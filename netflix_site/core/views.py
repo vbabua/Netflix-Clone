@@ -102,3 +102,8 @@ def signup(request):
     else:
         # If the request method is not POST, simply render the signup page template
         return render(request, 'signup.html')
+
+@login_required(login_url = 'login')
+def logout(request):
+    auth.logout(request)
+    return redirect('login')
