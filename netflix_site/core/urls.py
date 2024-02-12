@@ -12,6 +12,8 @@ urlpatterns = [
     # When "/login" is accessed, Django will execute the views.login function.
     path('login', views.login, name='login'),
 
+    # Define a URL pattern for the 'logout' path.
+    # When "/logout" is accessed, Django will execute the views.logout function, allowing users to log out.
     path('logout', views.logout, name='logout'),
     
     # Define a URL pattern for the 'signup' path.
@@ -20,8 +22,14 @@ urlpatterns = [
 
     # Define a URL pattern for individual movie details.
     # When "/movie/<str:pk>/" is accessed, Django will execute the views.movie function, passing the 'pk' as a parameter.
-    path('movie/<str:pk>/', views.movie, name = 'movie'),
- 
+    path('movie/<str:pk>/', views.movie, name='movie'),
+    
+    # Define a URL pattern for accessing a user's personal list of movies.
+    # When "/my-list" is accessed, Django will execute the views.my_list function, displaying the user's list of movies.
+    path('my-list', views.my_list, name='my-list'),
 
-
+    # Define a URL pattern for adding a movie to the user's personal list.
+    # When "/add-to-list" is accessed, Django will execute the views.add_to_list function, allowing users to add movies to their list.
+    path('add-to-list', views.add_to_list, name='add-to-list'),
 ]
+

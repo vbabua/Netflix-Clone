@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.conf import settings
 
 class Movie(models.Model):
     GENRE_CHOICES =[
@@ -25,3 +26,10 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+class MovieList(models.Model):
+    owner_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete = models.CASCADE,
+    )
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)

@@ -2,8 +2,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages 
-from .models import Movie
+from .models import Movie, MovieList
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+import re
 
 # View function to display the index page
 @login_required(login_url = 'login')
@@ -29,7 +32,38 @@ def movie(request, pk):
     }
     # Rendering the movie.html template, passing in the movie details
     return render(request, 'movie.html', context)
-    
+
+
+
+# View function to add a movie to the user's list
+@login_required(login_url='login')
+def add_to_list(request):
+    # Only process POST requests to add movies to the user's list
+    if request.method == 'POST':
+        # Extract the movie ID from the POST request
+        movie_url_id = request.POST.get('movie_id')
+        # Use regular expression to validate and extract the UUID from the movie ID
+        uuid_pattern = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+        match = re.search(uuid_pattern, movie_url_id)
+        movie_id = match.group() if match else None
+
+        # Fetch the movie from the database or return 404 if not found
+        movie = get_object_or_404(Movie, uu_id=movie_id)
+        # Attempt to add the movie to the user's list, creating a new list entry if necessary
+        movie_list, created = MovieList.objects.get_or_create(owner_user=request.user, movie=movie)
+
+        # Provide feedback based on whether a new list entry was created
+        if created:
+            response_data = {'status': 'success', 'message': 'Added ✓'}
+        else:
+            response_data = {'status': 'info', 'message': 'Movie already in list'}
+
+        # Return a JsonResponse with the operation result
+        return JsonResponse(response_data)
+    else:
+        # Return an error response if the request method is not POST
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
 
 # View function to display the login page and handle login functionality
 def login(request):
