@@ -2,11 +2,34 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages 
+from .models import Movie
+from django.contrib.auth.decorators import login_required
 
 # View function to display the index page
+@login_required(login_url = 'login')
 def index(request):
+    movies = Movie.objects.all()
+
+    context = {
+        'movies': movies
+    }
     # Rendering the index.html template for any request to the index view
-    return render(request, 'index.html')
+    return render(request, 'index.html', context)
+
+# View function to display details for a specific movie
+@login_required(login_url = 'login')
+def movie(request, pk):
+    # Retrieving the unique identifier for the movie from the URL
+    movie_uuid = pk
+    # Fetching the movie details from the database using the unique identifier
+    movie_details = Movie.objects.get(uu_id=movie_uuid)
+
+    context = {
+        'movie_details': movie_details
+    }
+    # Rendering the movie.html template, passing in the movie details
+    return render(request, 'movie.html', context)
+    
 
 # View function to display the login page and handle login functionality
 def login(request):
