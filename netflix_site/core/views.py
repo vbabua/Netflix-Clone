@@ -33,6 +33,25 @@ def movie(request, pk):
     # Rendering the movie.html template, passing in the movie details
     return render(request, 'movie.html', context)
 
+@login_required(login_url='login')
+def search(request):
+    # Process the search query if the method is POST
+    if request.method == 'POST':
+        # Retrieve the search term from the POST request
+        search_term = request.POST['search_term']
+        # Query the Movie model for movies that contain the search term in their title, case-insensitive
+        movies = Movie.objects.filter(title__icontains=search_term)
+
+        # Prepare the context with the search results and the search term
+        context = {
+            'movies': movies,
+            'search_term': search_term,
+        }
+        # Render the search results page, passing in the context
+        return render(request, 'search.html', context)
+    else:
+        # Redirect to the homepage if the request method is not POST, indicating an invalid search attempt
+        return redirect('/')
 
 
 @login_required(login_url='login')
