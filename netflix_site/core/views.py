@@ -174,7 +174,27 @@ def signup(request):
         # If the request method is not POST, simply render the signup page template
         return render(request, 'signup.html')
 
+# View function to handle the logout
 @login_required(login_url = 'login')
 def logout(request):
+    # Log out the current user
     auth.logout(request)
+    # Redirect to the login page after successfully logging out
     return redirect('login')
+
+
+# View function to handle the genres
+@login_required(login_url='login')
+def genre(request, pk):
+    # Retrieving the genre identifier from the URL parameter
+    movie_genre = pk
+    # Querying the Movie model to get all movies that match the given genre
+    movies = Movie.objects.filter(genre=movie_genre)
+
+    # Preparing the context with the list of movies belonging to the specified genre
+    context = {
+        'movies': movies,
+        'movie_genre': movie_genre,  # Passing the genre back to the template for display or further use
+    }
+    # Rendering the genre.html template, passing in the context with movies of the specified genre
+    return render(request, 'genre.html', context)

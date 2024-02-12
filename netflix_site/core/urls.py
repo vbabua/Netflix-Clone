@@ -35,5 +35,10 @@ urlpatterns = [
     # Define a URL pattern for the search functionality.
     # When "/search" is accessed, Django will execute the views.search function, allowing users to search for movies.
     path('search', views.search, name='search'),
+
+    # Define a URL pattern for accessing movies by genre.
+    # When "/genre/<str:pk>/" is accessed, Django will execute the views.genre function, passing the 'pk' as a parameter.
+    # This allows users to view movies filtered by a specific genre.
+    path('genre/<str:pk>/', views.genre, name='genre'),
 ]
 
